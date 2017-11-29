@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import axios from 'axios'
+import axios from 'axios';
+import Todo from './Todo';
 
 const APIURL = '/api/todos'
 
@@ -22,8 +23,16 @@ class TodoList extends Component {
     }) 
   }
   render(){
+    const todos = this.state.todos.map((todo) =>{
+      return <Todo key={todo._id} {...todo} /> 
+    })
     return(
-      <h1>Hello from todo component</h1>
+      <div>
+        <h1>Todo List</h1>
+        <ul>
+        {todos}
+        </ul>
+      </div>  
     )
   }
 }

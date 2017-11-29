@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 
-const TodoItem = ({name}) => (
-  <li>
+const Todo = ({ name, completed }) => (
+  <li style={{
+    textDecoration: completed? 'line-through' : 'none'
+  }}>
   {name}
   </li>
 )
+
+export default Todo
