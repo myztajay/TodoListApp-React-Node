@@ -33,10 +33,42 @@ class TodoList extends Component {
     }) 
   }
   
+  deleteTodo(id){
+    axios.delete(`${APIURL}/${id}`)
+    .catch(err => console.log(err))
+    .then(() => {
+      const todos = this.state.todos.filter((todo) => todo._id !== id)
+      console.log(todos);
+      this.setState({todos: todos }) 
+    })
+  }
+  
+  toggleTodo(todo){
+    axios.put(`${APIURL}/${todo._id}`, {completed: !todo.completed})
+    .catch(err => console.log(err))
+    .then((updatedTodo) => {
+      const todos = this.state.todos.map(t => 
+        (t._id === updatedTodo.data._id)
+        ? {...t, completed: !t.completed}
+        : t
+      )
+      console.log(todos);
+      this.setState({ todos: todos }) 
+    })
+  }
+  
   render(){
     const todos = this.state.todos.map((todo) =>{
-      return <Todo key={todo._id} {...todo} /> 
+      return (
+        <Todo 
+          key={todo._id} 
+          {...todo} 
+          deleteTodo={this.deleteTodo.bind(this, todo._id)} 
+          toggleTodo={this.toggleTodo.bind(this, todo)}
+        />
+      ) 
     })
+    
     return(
       <div>
         <h1>Todo </h1>
