@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import Todo from './Todo';
 import TodoForm from './TodoForm';
-
-const APIURL = '/api/todos'
+import * as apiCalls from '../helpers/api';
 
 class TodoList extends Component {
   constructor(props){
@@ -16,45 +14,30 @@ class TodoList extends Component {
     this.getTodos()
   }
   
-  getTodos(){
-    axios.get(APIURL)
-    .catch(err => console.log(err))
-    .then(res => {
-      this.setState({todos: res.data})
-    }) 
+  async getTodos(){
+    let todos = await apiCalls.getTodos()
+    this.setState({todos: todos})
   }
   
-  createTodo(name){
-    axios.post(APIURL,{ name })
-    .catch(err => console.log(err))
-    .then(res => {
-      console.log(res);
-      this.setState({todos: [...this.state.todos, res.data]})
-    }) 
+  async createTodo(name){
+    let todo = await apiCalls.createTodo(name)
+    this.setState({todos: [...this.state.todos, todo]})  
   }
   
-  deleteTodo(id){
-    axios.delete(`${APIURL}/${id}`)
-    .catch(err => console.log(err))
-    .then(() => {
+  async deleteTodo(id){
+    await apiCalls.deleteTodo(id)
       const todos = this.state.todos.filter((todo) => todo._id !== id)
-      console.log(todos);
       this.setState({todos: todos }) 
-    })
   }
   
-  toggleTodo(todo){
-    axios.put(`${APIURL}/${todo._id}`, {completed: !todo.completed})
-    .catch(err => console.log(err))
-    .then((updatedTodo) => {
+  async toggleTodo(todo){
+      let updatedTodo = await apiCalls.toggleTodo(todo)
       const todos = this.state.todos.map(t => 
-        (t._id === updatedTodo.data._id)
+        (t._id === updatedTodo._id)
         ? {...t, completed: !t.completed}
         : t
       )
-      console.log(todos);
       this.setState({ todos: todos }) 
-    })
   }
   
   render(){
